@@ -44,10 +44,10 @@ export default function Home() {
 
           <div className="relative rounded-2xl overflow-hidden shadow-2xl">
             <Image
-              src="/images/hero-pallet-bags.jpg"
-              alt="Palletised woven sack bags ready for dispatch at CROX Oil & Gas"
-              width={1600}
-              height={1067}
+              src="/images/pp-fab-8-cutting.webp"
+              alt="PP fabric production at CROX Oil & Gas"
+              width={900}
+              height={599}
               className="w-full h-auto object-cover"
               priority
             />

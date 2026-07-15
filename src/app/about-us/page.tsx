@@ -62,13 +62,13 @@ export default function AboutUsPage() {
               scale great heights.
             </p>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow-lg">
+          <div className="rounded-2xl overflow-hidden shadow-lg bg-section">
             <Image
-              src="/images/about-1.jpg"
-              alt="CROX Oil & Gas facility"
+              src="/images/infra-tape-stretching.png"
+              alt="Tape stretching line at CROX Oil & Gas"
               width={900}
               height={700}
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-contain p-8"
             />
           </div>
         </div>
@@ -76,13 +76,13 @@ export default function AboutUsPage() {
 
       <section className="bg-section py-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1">
+          <div className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1 bg-white">
             <Image
-              src="/images/about-2.jpg"
-              alt="CROX Oil & Gas production"
+              src="/images/infra-jumbo-cutting.webp"
+              alt="FIBC jumbo bag cutting machine at CROX Oil & Gas"
               width={900}
               height={700}
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-contain p-8"
             />
           </div>
           <div className="order-1 lg:order-2">
@@ -118,21 +118,6 @@ export default function AboutUsPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="bg-section py-16">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12 flex flex-wrap items-center justify-center gap-12">
-          {["partner1", "partner2", "partner3", "partner4"].map((p) => (
-            <Image
-              key={p}
-              src={`/images/${p}.png`}
-              alt="Partner"
-              width={140}
-              height={70}
-              className="h-12 w-auto opacity-70"
-            />
-          ))}
         </div>
       </section>
     </>
