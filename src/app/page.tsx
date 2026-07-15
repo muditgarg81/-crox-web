@@ -17,9 +17,9 @@ export default function Home() {
           Quality Woven Sack Bags &amp; FIBC Bags at Affordable Prices &mdash; {company.name}
         </h1>
         <Image
-          src="/images/hero-industrial-dusk.jpg"
+          src="/images/hero-industrial-dusk-v2.jpg"
           alt="Quality Woven Sack Bags & FIBC Bags at Affordable Prices — CROX OIL & GAS PVT. LTD"
-          width={3128}
+          width={3134}
           height={1258}
           className="w-full h-auto"
           priority
