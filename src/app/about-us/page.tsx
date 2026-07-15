@@ -40,6 +40,22 @@ export default function AboutUsPage() {
     <>
       <PageHero title="About Us" subtitle="Welcome to CROX OIL & GAS PVT. LTD" />
 
+      <section>
+        <div className="relative">
+          <Image
+            src="/images/facility-illustrative.jpg"
+            alt="Illustrative rendering of an industrial manufacturing facility"
+            width={2816}
+            height={1536}
+            className="w-full h-auto object-cover max-h-[420px]"
+            priority
+          />
+          <p className="absolute bottom-2 right-3 text-[11px] text-white/80 bg-black/40 rounded px-2 py-0.5">
+            Illustrative rendering, not an actual photograph of our facility
+          </p>
+        </div>
+      </section>
+
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-4 text-muted leading-relaxed">
