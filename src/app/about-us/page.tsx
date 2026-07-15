@@ -92,14 +92,30 @@ export default function AboutUsPage() {
 
       <section className="bg-section py-16">
         <div className="mx-auto max-w-7xl px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="rounded-2xl overflow-hidden shadow-lg order-2 lg:order-1 bg-white">
-            <Image
-              src="/images/infra-jumbo-cutting.webp"
-              alt="FIBC jumbo bag cutting machine at CROX Oil & Gas"
-              width={900}
-              height={700}
-              className="w-full h-auto object-contain p-8"
-            />
+          <div className="rounded-2xl shadow-lg order-2 lg:order-1 bg-white flex items-center justify-center p-16">
+            <svg
+              viewBox="0 0 120 120"
+              className="w-40 h-40"
+              role="img"
+              aria-label="Quality assurance badge"
+            >
+              <circle cx="60" cy="60" r="56" fill="var(--section-bg)" />
+              <path
+                d="M60 14 L96 28 V58 C96 82 81 98 60 108 C39 98 24 82 24 58 V28 Z"
+                fill="none"
+                stroke="var(--navy)"
+                strokeWidth="4"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M42 60 L54 72 L80 46"
+                fill="none"
+                stroke="var(--amber)"
+                strokeWidth="7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
           <div className="order-1 lg:order-2">
             <h2 className="text-2xl font-bold text-foreground mb-4">Quality assurance</h2>
