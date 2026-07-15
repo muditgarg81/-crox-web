@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CROX OIL & GAS — Website
 
-## Getting Started
+Next.js 16 (App Router, TypeScript, Tailwind v4) rebuild of the [croxoilandgas.com](https://croxoilandgas.com) marketing site, replacing the previous WordPress install.
 
-First, run the development server:
+Content, images, and the colour theme (`#085471` teal / `#eac362` gold) were sourced directly from the live site to match it exactly; leftover demo content from the old "Makaffo" WordPress theme was removed.
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> **Note:** if this repo is checked out under a path containing a space, pass `--webpack` (already the default in `package.json`'s `dev`/`build` scripts) — Turbopack currently fails to resolve paths with spaces.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Contact form
 
-## Learn More
+`src/app/api/contact/route.ts` handles submissions from `/contacts`. Set `RESEND_API_KEY` (see `.env.example`) to send enquiries via [Resend](https://resend.com); without it, submissions are logged server-side instead.
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `src/lib/site.ts` — company info, nav, product, and blog post data
+- `src/components/` — `Header`, `Footer`, `PageHero`, `ContactForm`, `BlogPostLayout`
+- `src/app/` — one route per real page from the live site (products, infrastructure, quality, blog posts, contact)
+- `public/images/` — real assets pulled from the site's own media library
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploys to [Vercel](https://vercel.com) via GitHub integration.
