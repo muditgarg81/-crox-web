@@ -13,44 +13,31 @@ export default function Home() {
   return (
     <>
       <section className="relative bg-navy overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12 py-20 lg:py-28 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-white">
-            <p className="uppercase tracking-widest text-amber font-semibold mb-4">
-              {company.name}
-            </p>
-            <h1 className="text-4xl lg:text-5xl font-bold leading-tight mb-6 text-white">
-              Quality Woven Sack Bags &amp; FIBC Bags at Affordable Prices
-            </h1>
-            <p className="text-white/80 text-lg mb-8 max-w-xl">
-              The Group&apos;s well-trained and experienced staff and associates ensure that
-              all products are made from the finest material, adopting stringent quality
-              control measures throughout the production process.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/contacts"
-                className="rounded-full bg-amber px-7 py-3.5 font-semibold text-white hover:bg-amber-light transition-colors"
-              >
-                Get in touch
-              </Link>
-              <Link
-                href="/about-us"
-                className="rounded-full border border-white/40 px-7 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                Get to know more
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-            <Image
-              src="/images/pp-fab-8-cutting.webp"
-              alt="PP fabric production at CROX Oil & Gas"
-              width={900}
-              height={599}
-              className="w-full h-auto object-cover"
-              priority
-            />
+        <h1 className="sr-only">
+          Quality Woven Sack Bags &amp; FIBC Bags at Affordable Prices &mdash; {company.name}
+        </h1>
+        <Image
+          src="/images/hero-industrial-dusk.jpg"
+          alt="Quality Woven Sack Bags & FIBC Bags at Affordable Prices — CROX OIL & GAS PVT. LTD"
+          width={3128}
+          height={1258}
+          className="w-full h-auto"
+          priority
+        />
+        <div className="bg-navy-dark py-6">
+          <div className="mx-auto max-w-7xl px-6 lg:px-12 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/contacts"
+              className="rounded-full bg-amber px-7 py-3.5 font-semibold text-white hover:bg-amber-light transition-colors"
+            >
+              Request a Quote
+            </Link>
+            <Link
+              href="/contacts"
+              className="rounded-full border border-white/40 px-7 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
+            >
+              Get In Touch
+            </Link>
           </div>
         </div>
       </section>
