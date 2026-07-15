@@ -43,22 +43,30 @@ export default function Home() {
       </section>
 
       <section className="bg-section py-16">
-        <div className="mx-auto max-w-7xl px-6 lg:px-12 grid lg:grid-cols-3 gap-10 items-start">
-          <div className="lg:col-span-1">
-            <Image src="/images/quality_icon.png" alt="" width={64} height={64} className="mb-4" />
-            <h2 className="text-2xl font-bold text-foreground mb-3">Quality assurance</h2>
+        <div className="mx-auto max-w-7xl px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
+          <div className="rounded-2xl overflow-hidden shadow-lg">
+            <Image
+              src="/images/pallet-bags.jpg"
+              alt="Palletised woven sack bags ready for dispatch"
+              width={1600}
+              height={872}
+              className="w-full h-auto object-cover"
+            />
           </div>
-          <div className="lg:col-span-2 space-y-4 text-muted leading-relaxed">
-            <p>
-              The Group&apos;s well-trained and experienced staff and associates ensure that
-              all the products are made from the finest material and adopt stringent quality
-              control measures throughout the production process.
-            </p>
-            <p>
-              We at CROX always try to maintain the best quality in our PP Woven products. We
-              provide a comprehensive range of Polyethylene and Polypropylene packing bags
-              and sacks that conform to the requisite quality standards.
-            </p>
+          <div>
+            <h2 className="text-2xl font-bold text-foreground mb-3">Quality assurance</h2>
+            <div className="space-y-4 text-muted leading-relaxed">
+              <p>
+                The Group&apos;s well-trained and experienced staff and associates ensure that
+                all the products are made from the finest material and adopt stringent quality
+                control measures throughout the production process.
+              </p>
+              <p>
+                We at CROX always try to maintain the best quality in our PP Woven products. We
+                provide a comprehensive range of Polyethylene and Polypropylene packing bags
+                and sacks that conform to the requisite quality standards.
+              </p>
+            </div>
           </div>
         </div>
       </section>
