@@ -78,14 +78,18 @@ export default function AboutUsPage() {
               scale great heights.
             </p>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow-lg bg-section">
-            <Image
-              src="/images/infra-tape-stretching.png"
-              alt="Tape stretching line at CROX Oil & Gas"
-              width={900}
-              height={700}
-              className="w-full h-auto object-contain p-8"
+          <div className="relative rounded-2xl overflow-hidden shadow-lg bg-section">
+            <video
+              src="/videos/circular-loom-process.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-auto"
             />
+            <p className="absolute bottom-2 right-3 text-[11px] text-white/80 bg-black/40 rounded px-2 py-0.5">
+              Illustrative animation of the weaving process
+            </p>
           </div>
         </div>
       </section>
