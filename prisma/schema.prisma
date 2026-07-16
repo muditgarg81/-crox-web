@@ -37,6 +37,7 @@ model User {
   email        String   @unique
   passwordHash String
   role         Role     @default(EMPLOYEE)
+  isActive     Boolean  @default(true)
   department   String?
   designation  String?
   phone        String?
@@ -46,12 +47,22 @@ model User {
   sickLeaveBalance   Int @default(8)
   annualLeaveBalance Int @default(15)
 
-  leaveRequests       LeaveRequest[] @relation("EmployeeLeaves")
-  reviewedLeaves      LeaveRequest[] @relation("ReviewedLeaves")
-  grievances          Grievance[]    @relation("EmployeeGrievances")
-  respondedGrievances Grievance[]    @relation("RespondedGrievances")
-  notices             Notice[]       @relation("PostedNotices")
-  documents           Document[]     @relation("UploadedDocuments")
+  leaveRequests       LeaveRequest[]      @relation("EmployeeLeaves")
+  reviewedLeaves      LeaveRequest[]      @relation("ReviewedLeaves")
+  grievances          Grievance[]         @relation("EmployeeGrievances")
+  respondedGrievances Grievance[]         @relation("RespondedGrievances")
+  notices             Notice[]            @relation("PostedNotices")
+  documents           Document[]          @relation("UploadedDocuments")
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model LeaveRequest {

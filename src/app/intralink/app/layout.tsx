@@ -10,6 +10,7 @@ const navItems = [
   { href: "/intralink/app/grievances", label: "Grievances" },
   { href: "/intralink/app/directory", label: "Directory" },
   { href: "/intralink/app/documents", label: "Documents" },
+  { href: "/intralink/app/profile", label: "My Profile" },
 ];
 
 export default async function IntralinkAppLayout({
