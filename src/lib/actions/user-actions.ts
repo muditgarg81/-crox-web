@@ -60,3 +60,19 @@ export async function updateLeaveBalances(formData: FormData) {
   });
   revalidateUserPages();
 }
+
+export async function updateEmployeeId(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  const employeeId = String(formData.get("employeeId") ?? "").trim() || null;
+
+  if (employeeId) {
+    const existing = await prisma.user.findUnique({ where: { employeeId } });
+    if (existing && existing.id !== id) {
+      throw new Error(`Employee ID "${employeeId}" is already in use.`);
+    }
+  }
+
+  await prisma.user.update({ where: { id }, data: { employeeId } });
+  revalidateUserPages();
+}

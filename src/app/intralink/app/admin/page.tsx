@@ -3,7 +3,12 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { reviewLeaveRequest } from "@/lib/actions/leave-actions";
 import { respondToGrievance } from "@/lib/actions/grievance-actions";
-import { promoteToAdmin, setUserActive, updateLeaveBalances } from "@/lib/actions/user-actions";
+import {
+  promoteToAdmin,
+  setUserActive,
+  updateLeaveBalances,
+  updateEmployeeId,
+} from "@/lib/actions/user-actions";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -160,7 +165,8 @@ export default async function AdminConsolePage() {
                     )}
                   </p>
                   <p className="text-sm text-muted">
-                    {u.email} &middot; {u.department ?? "No department"}
+                    {u.email} &middot; {u.department ?? "No department"} &middot; ID:{" "}
+                    {u.employeeId ?? "not set"}
                   </p>
                 </div>
 
@@ -189,6 +195,26 @@ export default async function AdminConsolePage() {
                   </div>
                 )}
               </div>
+
+              <form action={updateEmployeeId} className="flex flex-wrap items-end gap-4 mb-4">
+                <input type="hidden" name="id" value={u.id} />
+                <div>
+                  <label className="block text-xs font-medium text-muted mb-1">Employee ID</label>
+                  <input
+                    type="text"
+                    name="employeeId"
+                    defaultValue={u.employeeId ?? ""}
+                    placeholder="e.g. EMP001"
+                    className="w-32 rounded-lg border border-gray-200 px-2 py-1.5 text-sm"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="rounded-full border border-navy text-navy px-4 py-1.5 text-xs font-semibold hover:bg-navy hover:text-white transition-colors"
+                >
+                  Save ID
+                </button>
+              </form>
 
               <form action={updateLeaveBalances} className="flex flex-wrap items-end gap-4">
                 <input type="hidden" name="id" value={u.id} />

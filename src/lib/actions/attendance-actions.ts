@@ -77,16 +77,17 @@ export async function bulkImportAttendance(
     return { errors: ["The file is empty."] };
   }
 
-  // Skip a header row if the first cell isn't an email address.
+  // Skip a header row if its "date" column (3rd cell) doesn't parse as a date.
   const header = rows[0];
-  const dataRows = header[0]?.includes("@") ? rows : rows.slice(1);
+  const headerLooksLikeData = header[2] && !Number.isNaN(new Date(header[2]).getTime());
+  const dataRows = headerLooksLikeData ? rows : rows.slice(1);
 
-  const emails = [...new Set(dataRows.map((r) => r[0]?.toLowerCase()).filter(Boolean))];
+  const employeeIds = [...new Set(dataRows.map((r) => r[0]?.trim()).filter(Boolean))];
   const users = await prisma.user.findMany({
-    where: { email: { in: emails } },
-    select: { id: true, email: true, isActive: true },
+    where: { employeeId: { in: employeeIds } },
+    select: { id: true, employeeId: true, isActive: true },
   });
-  const userByEmail = new Map(users.map((u) => [u.email.toLowerCase(), u]));
+  const userByEmployeeId = new Map(users.map((u) => [u.employeeId as string, u]));
 
   const errors: string[] = [];
   const validRecords: {
@@ -98,20 +99,20 @@ export async function bulkImportAttendance(
 
   dataRows.forEach((row, i) => {
     const rowNum = i + 1;
-    const [email, dateStr, statusStr, overtimeStr] = row;
+    const [employeeId, name, dateStr, statusStr, overtimeStr] = row;
 
-    if (!email || !dateStr || !statusStr) {
-      errors.push(`Row ${rowNum}: missing email, date, or status.`);
+    if (!employeeId || !dateStr || !statusStr) {
+      errors.push(`Row ${rowNum}: missing employee ID, date, or status.`);
       return;
     }
 
-    const user = userByEmail.get(email.toLowerCase());
+    const user = userByEmployeeId.get(employeeId);
     if (!user) {
-      errors.push(`Row ${rowNum}: no account found for ${email}.`);
+      errors.push(`Row ${rowNum}: no account found for employee ID ${employeeId}${name ? ` (${name})` : ""}.`);
       return;
     }
     if (!user.isActive) {
-      errors.push(`Row ${rowNum}: ${email}'s account is deactivated.`);
+      errors.push(`Row ${rowNum}: ${employeeId}${name ? ` (${name})` : ""}'s account is deactivated.`);
       return;
     }
 

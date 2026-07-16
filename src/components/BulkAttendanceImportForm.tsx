@@ -11,10 +11,13 @@ export default function BulkAttendanceImportForm() {
     <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
       <h2 className="font-bold text-foreground mb-2">Bulk Import Attendance</h2>
       <p className="text-sm text-muted mb-4">
-        Upload a CSV with columns <code className="bg-section rounded px-1.5 py-0.5">email, date, status, overtimeHours</code>.
-        Date format <code className="bg-section rounded px-1.5 py-0.5">YYYY-MM-DD</code>, status is
-        Present / Absent / Half_Day, overtimeHours is optional (defaults to 0). Re-importing a date for
-        the same employee updates that record.
+        Upload a CSV with columns{" "}
+        <code className="bg-section rounded px-1.5 py-0.5">employeeId, name, date, status, overtimeHours</code>.
+        Employee ID must match what&apos;s set for that person in User Management below (name is just for
+        readability and isn&apos;t used to match). Date format{" "}
+        <code className="bg-section rounded px-1.5 py-0.5">YYYY-MM-DD</code>, status is Present / Absent /
+        Half_Day, overtimeHours is optional (defaults to 0). Re-importing a date for the same employee
+        updates that record.
       </p>
 
       <form

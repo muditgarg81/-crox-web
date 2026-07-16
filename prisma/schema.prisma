@@ -39,6 +39,7 @@ enum AttendanceStatus {
 
 model User {
   id           String   @id @default(cuid())
+  employeeId   String?  @unique
   name         String
   email        String   @unique
   passwordHash String
