@@ -16,14 +16,10 @@ export async function submitLeaveRequest(formData: FormData) {
     throw new Error("Only employees can submit leave requests.");
   }
 
-  const type = String(formData.get("type"));
   const startDate = String(formData.get("startDate"));
   const endDate = String(formData.get("endDate"));
   const reason = String(formData.get("reason") ?? "").trim();
 
-  if (!["CASUAL", "SICK", "ANNUAL", "UNPAID"].includes(type)) {
-    throw new Error("Invalid leave type.");
-  }
   if (!startDate || !endDate || !reason) {
     throw new Error("All fields are required.");
   }
@@ -31,7 +27,7 @@ export async function submitLeaveRequest(formData: FormData) {
   await prisma.leaveRequest.create({
     data: {
       userId: session.user.id,
-      type: type as "CASUAL" | "SICK" | "ANNUAL" | "UNPAID",
+      type: "CASUAL",
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       reason,

@@ -26,8 +26,8 @@ export default async function IntralinkAppLayout({
   const items = session.user.role === "ADMIN" ? [adminNavItem, ...navItems] : navItems;
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-section flex flex-col md:flex-row">
-      <aside className="md:w-64 shrink-0 bg-navy text-white flex flex-col">
+    <div className="bg-section flex flex-col md:flex-row md:items-start">
+      <aside className="md:w-64 shrink-0 bg-navy text-white md:sticky md:top-16">
         <div className="p-6 border-b border-white/10">
           <p className="font-bold text-lg">Intralink</p>
           <p className="text-sm text-white/60 mt-1">{session.user.name}</p>
@@ -35,7 +35,7 @@ export default async function IntralinkAppLayout({
             {session.user.role}
           </span>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="p-4 space-y-1">
           {items.map((item) => (
             <Link
               key={item.href}
@@ -58,7 +58,7 @@ export default async function IntralinkAppLayout({
         </div>
       </aside>
 
-      <main className="flex-1 p-6 lg:p-10">{children}</main>
+      <main className="flex-1 min-w-0 p-6 lg:p-10">{children}</main>
     </div>
   );
 }

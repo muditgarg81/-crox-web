@@ -44,9 +44,7 @@ export default async function AdminConsolePage() {
             {pendingLeave.map((r) => (
               <div key={r.id} className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
-                  <p className="font-semibold text-foreground">
-                    {r.user.name} <span className="text-muted font-normal">— {r.type}</span>
-                  </p>
+                  <p className="font-semibold text-foreground">{r.user.name}</p>
                   <span className="text-xs font-semibold rounded-full px-3 py-1 bg-amber/20 text-amber">
                     PENDING
                   </span>
