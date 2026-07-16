@@ -5,7 +5,7 @@ import PageHero from "@/components/PageHero";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "CROX OIL & GAS PVT. LTD is a growing manufacturer of PP/FIBC woven sacks and fabrics based in Nagpur, India.",
+    "CROX OIL & GAS PVT. LTD is a leading manufacturer of PP/FIBC woven sacks and fabrics based in Nagpur, India.",
 };
 
 const qualityPoints = [
@@ -64,7 +64,7 @@ export default function AboutUsPage() {
               affordable prices&rdquo; to customers.
             </p>
             <p>
-              We are a growing manufacturer of PP/FIBC woven sacks and fabrics. The company is
+              We are a leading manufacturer of PP/FIBC woven sacks and fabrics. The company is
               located at Nagpur, and possesses a fully capable production plant established
               near Nagpur itself. There is a growing demand for PP/HDPE fabric for packing
               different products in the field of fertilizers, cement, polymers, chemicals,

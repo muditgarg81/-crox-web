@@ -23,7 +23,7 @@ export default function Footer() {
             className="h-11 w-auto mb-4"
           />
           <p className="text-white/60 text-sm leading-relaxed">
-            A growing manufacturer of PP/HDPE woven sacks, fabrics, and FIBC bags based in
+            A leading manufacturer of PP/HDPE woven sacks, fabrics, and FIBC bags based in
             Nagpur, India.
           </p>
         </div>

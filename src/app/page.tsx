@@ -3,10 +3,10 @@ import Link from "next/link";
 import { company, products, blogPosts } from "@/lib/site";
 
 const stats = [
-  { value: "12 years", label: "Experience in the field" },
-  { value: "25000+", label: "Metric tons of production delivered" },
-  { value: "12,00,00,000+", label: "Bags manufactured" },
-  { value: "30000+", label: "Man months of labour employed" },
+  { value: "15 years", label: "Experience in the field" },
+  { value: "50000+", label: "Metric tons of production delivered" },
+  { value: "20,00,00,000+", label: "Bags manufactured" },
+  { value: "70000+", label: "Man months of labour employed" },
 ];
 
 export default function Home() {
@@ -110,7 +110,7 @@ export default function Home() {
               CROX OIL &amp; GAS PVT. LTD
             </h2>
             <p className="text-white/80 leading-relaxed mb-4">
-              We are a growing manufacturer of PP/FIBC woven sacks and fabrics. The company
+              We are a leading manufacturer of PP/FIBC woven sacks and fabrics. The company
               is located at Nagpur, and possesses a fully capable production plant
               established near Nagpur itself.
             </p>

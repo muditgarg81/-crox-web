@@ -15,13 +15,60 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = "https://croxoilandgas.com";
+const description =
+  "CROX OIL & GAS PVT. LTD manufactures PP woven sacks, FIBC/jumbo bags, polypropylene fabric, and HM/LDPE liners from our Nagpur, India facility.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: `${company.name} | ${company.tagline}`,
     template: `%s | ${company.name}`,
   },
-  description:
-    "CROX OIL & GAS PVT. LTD manufactures PP woven sacks, FIBC/jumbo bags, polypropylene fabric, and HM/LDPE liners from our Nagpur, India facility.",
+  description,
+  keywords: [
+    "PP woven sacks",
+    "FIBC bags",
+    "jumbo bags manufacturer",
+    "polypropylene fabric",
+    "HDPE liners",
+    "woven sack bags Nagpur",
+    "PP bags manufacturer India",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: company.name,
+    title: `${company.name} | ${company.tagline}`,
+    description,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${company.name} | ${company.tagline}`,
+    description,
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ManufacturingBusiness",
+  name: company.name,
+  description,
+  url: siteUrl,
+  logo: `${siteUrl}/images/crox_logo.png`,
+  email: company.email,
+  telephone: company.phone,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: company.address,
+    addressLocality: "Nagpur",
+    addressRegion: "Maharashtra",
+    addressCountry: "IN",
+  },
 };
 
 export default function RootLayout({
@@ -35,6 +82,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
