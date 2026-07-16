@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { markAttendance } from "@/lib/actions/attendance-actions";
 import AttendanceControls from "@/components/AttendanceControls";
+import BulkAttendanceImportForm from "@/components/BulkAttendanceImportForm";
 
 const statusColors: Record<string, string> = {
   PRESENT: "bg-green-100 text-green-700",
@@ -71,6 +72,8 @@ export default async function AttendancePage({
         <h1 className="text-2xl font-bold text-foreground mb-6">Attendance</h1>
 
         <AttendanceControls month={month} employees={employees} selectedEmployeeId={selectedEmployeeId} />
+
+        <BulkAttendanceImportForm />
 
         {selectedEmployee && (
           <>
