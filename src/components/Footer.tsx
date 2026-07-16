@@ -72,8 +72,11 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-5 text-center text-xs text-white/50">
-        © {new Date().getFullYear()} {company.name}
+      <div className="border-t border-white/10 py-5 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center text-xs text-white/50">
+        <span>© {new Date().getFullYear()} {company.name}</span>
+        <Link href="/intralink" className="hover:text-amber-light">
+          Employee Login
+        </Link>
       </div>
     </footer>
   );

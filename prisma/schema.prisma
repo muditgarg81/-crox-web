@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  ANNUAL
+  UNPAID
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum GrievanceStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(EMPLOYEE)
+  department   String?
+  designation  String?
+  phone        String?
+  createdAt    DateTime @default(now())
+
+  casualLeaveBalance Int @default(12)
+  sickLeaveBalance   Int @default(8)
+  annualLeaveBalance Int @default(15)
+
+  leaveRequests       LeaveRequest[] @relation("EmployeeLeaves")
+  reviewedLeaves      LeaveRequest[] @relation("ReviewedLeaves")
+  grievances          Grievance[]    @relation("EmployeeGrievances")
+  respondedGrievances Grievance[]    @relation("RespondedGrievances")
+  notices             Notice[]       @relation("PostedNotices")
+  documents           Document[]     @relation("UploadedDocuments")
+}
+
+model LeaveRequest {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation("EmployeeLeaves", fields: [userId], references: [id])
+  type         LeaveType
+  startDate    DateTime
+  endDate      DateTime
+  reason       String
+  status       LeaveStatus @default(PENDING)
+  adminComment String?
+  reviewedById String?
+  reviewedBy   User?       @relation("ReviewedLeaves", fields: [reviewedById], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Notice {
+  id         String   @id @default(cuid())
+  title      String
+  body       String
+  postedById String
+  postedBy   User     @relation("PostedNotices", fields: [postedById], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Grievance {
+  id            String          @id @default(cuid())
+  userId        String
+  user          User            @relation("EmployeeGrievances", fields: [userId], references: [id])
+  subject       String
+  description   String
+  status        GrievanceStatus @default(OPEN)
+  adminResponse String?
+  respondedById String?
+  respondedBy   User?           @relation("RespondedGrievances", fields: [respondedById], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  title        String
+  fileUrl      String
+  uploadedById String
+  uploadedBy   User     @relation("UploadedDocuments", fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+}
