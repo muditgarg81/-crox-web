@@ -6,6 +6,7 @@ import { logout } from "@/lib/actions/session-actions";
 const navItems = [
   { href: "/intralink/app/dashboard", label: "Dashboard" },
   { href: "/intralink/app/leave", label: "Leave" },
+  { href: "/intralink/app/attendance", label: "Attendance" },
   { href: "/intralink/app/notices", label: "Notices" },
   { href: "/intralink/app/grievances", label: "Grievances" },
   { href: "/intralink/app/directory", label: "Directory" },

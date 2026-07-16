@@ -31,6 +31,12 @@ enum GrievanceStatus {
   RESOLVED
 }
 
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -47,13 +53,15 @@ model User {
   sickLeaveBalance   Int @default(8)
   annualLeaveBalance Int @default(15)
 
-  leaveRequests       LeaveRequest[]      @relation("EmployeeLeaves")
-  reviewedLeaves      LeaveRequest[]      @relation("ReviewedLeaves")
-  grievances          Grievance[]         @relation("EmployeeGrievances")
-  respondedGrievances Grievance[]         @relation("RespondedGrievances")
-  notices             Notice[]            @relation("PostedNotices")
-  documents           Document[]          @relation("UploadedDocuments")
+  leaveRequests       LeaveRequest[]       @relation("EmployeeLeaves")
+  reviewedLeaves      LeaveRequest[]       @relation("ReviewedLeaves")
+  grievances          Grievance[]          @relation("EmployeeGrievances")
+  respondedGrievances Grievance[]          @relation("RespondedGrievances")
+  notices             Notice[]             @relation("PostedNotices")
+  documents           Document[]           @relation("UploadedDocuments")
   passwordResetTokens PasswordResetToken[]
+  attendanceRecords   AttendanceRecord[]   @relation("EmployeeAttendance")
+  markedAttendance    AttendanceRecord[]   @relation("MarkedAttendance")
 }
 
 model PasswordResetToken {
@@ -111,4 +119,19 @@ model Document {
   uploadedById String
   uploadedBy   User     @relation("UploadedDocuments", fields: [uploadedById], references: [id])
   createdAt    DateTime @default(now())
+}
+
+model AttendanceRecord {
+  id            String           @id @default(cuid())
+  userId        String
+  user          User             @relation("EmployeeAttendance", fields: [userId], references: [id])
+  date          DateTime         @db.Date
+  status        AttendanceStatus
+  overtimeHours Float            @default(0)
+  markedById    String
+  markedBy      User             @relation("MarkedAttendance", fields: [markedById], references: [id])
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@unique([userId, date])
 }
