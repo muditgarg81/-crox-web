@@ -16,10 +16,10 @@ export default async function DashboardPage() {
     ]);
 
     const cards = [
-      { label: "Pending leave requests", value: pendingLeave, href: "/intralink/app/leave" },
-      { label: "Open grievances", value: openGrievances, href: "/intralink/app/grievances" },
+      { label: "Pending leave requests", value: pendingLeave, href: "/intralink/app/admin" },
+      { label: "Open grievances", value: openGrievances, href: "/intralink/app/admin" },
       { label: "Notices posted", value: noticeCount, href: "/intralink/app/notices" },
-      { label: "Employees", value: employeeCount, href: "/intralink/app/directory" },
+      { label: "Employees", value: employeeCount, href: "/intralink/app/admin" },
     ];
 
     return (

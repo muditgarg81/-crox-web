@@ -13,6 +13,8 @@ const navItems = [
   { href: "/intralink/app/profile", label: "My Profile" },
 ];
 
+const adminNavItem = { href: "/intralink/app/admin", label: "Admin Console" };
+
 export default async function IntralinkAppLayout({
   children,
 }: {
@@ -20,6 +22,8 @@ export default async function IntralinkAppLayout({
 }) {
   const session = await auth();
   if (!session?.user) redirect("/intralink/login");
+
+  const items = session.user.role === "ADMIN" ? [adminNavItem, ...navItems] : navItems;
 
   return (
     <div className="min-h-[calc(100vh-64px)] bg-section flex flex-col md:flex-row">
@@ -32,7 +36,7 @@ export default async function IntralinkAppLayout({
           </span>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}

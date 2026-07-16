@@ -39,6 +39,7 @@ export async function submitLeaveRequest(formData: FormData) {
   });
 
   revalidatePath("/intralink/app/leave");
+  revalidatePath("/intralink/app/admin");
 }
 
 export async function reviewLeaveRequest(formData: FormData) {
@@ -82,4 +83,5 @@ export async function reviewLeaveRequest(formData: FormData) {
   });
 
   revalidatePath("/intralink/app/leave");
+  revalidatePath("/intralink/app/admin");
 }

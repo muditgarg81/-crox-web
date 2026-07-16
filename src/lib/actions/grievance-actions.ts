@@ -21,6 +21,7 @@ export async function submitGrievance(formData: FormData) {
   });
 
   revalidatePath("/intralink/app/grievances");
+  revalidatePath("/intralink/app/admin");
 }
 
 export async function respondToGrievance(formData: FormData) {
@@ -43,4 +44,5 @@ export async function respondToGrievance(formData: FormData) {
   });
 
   revalidatePath("/intralink/app/grievances");
+  revalidatePath("/intralink/app/admin");
 }

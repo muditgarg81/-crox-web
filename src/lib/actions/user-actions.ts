@@ -12,12 +12,17 @@ async function requireAdmin() {
   return session.user;
 }
 
+function revalidateUserPages() {
+  revalidatePath("/intralink/app/directory");
+  revalidatePath("/intralink/app/admin");
+}
+
 export async function promoteToAdmin(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
 
   await prisma.user.update({ where: { id }, data: { role: "ADMIN" } });
-  revalidatePath("/intralink/app/directory");
+  revalidateUserPages();
 }
 
 export async function setUserActive(formData: FormData) {
@@ -30,5 +35,28 @@ export async function setUserActive(formData: FormData) {
   }
 
   await prisma.user.update({ where: { id }, data: { isActive: active } });
-  revalidatePath("/intralink/app/directory");
+  revalidateUserPages();
+}
+
+export async function updateLeaveBalances(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+
+  const casualLeaveBalance = Number(formData.get("casualLeaveBalance"));
+  const sickLeaveBalance = Number(formData.get("sickLeaveBalance"));
+  const annualLeaveBalance = Number(formData.get("annualLeaveBalance"));
+
+  if (
+    !Number.isFinite(casualLeaveBalance) ||
+    !Number.isFinite(sickLeaveBalance) ||
+    !Number.isFinite(annualLeaveBalance)
+  ) {
+    throw new Error("Leave balances must be numbers.");
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data: { casualLeaveBalance, sickLeaveBalance, annualLeaveBalance },
+  });
+  revalidateUserPages();
 }
