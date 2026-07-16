@@ -3,6 +3,7 @@
 import { randomBytes, createHash } from "crypto";
 import { headers } from "next/headers";
 import bcrypt from "bcryptjs";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export type ResetActionState = { error?: string; success?: string } | undefined;
@@ -103,4 +104,28 @@ export async function resetPassword(
   ]);
 
   return { success: "Password updated. You can now log in." };
+}
+
+export async function changePassword(
+  _prevState: ResetActionState,
+  formData: FormData
+): Promise<ResetActionState> {
+  const session = await auth();
+  if (!session?.user) return { error: "Not signed in." };
+
+  const currentPassword = String(formData.get("currentPassword") ?? "");
+  const newPassword = String(formData.get("newPassword") ?? "");
+
+  if (newPassword.length < 8) {
+    return { error: "New password must be at least 8 characters." };
+  }
+
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: session.user.id } });
+  const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!valid) return { error: "Current password is incorrect." };
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
+
+  return { success: "Password changed." };
 }
