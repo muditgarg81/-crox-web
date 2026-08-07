@@ -8,6 +8,7 @@ const quickLinks = [
   { label: "Infrastructure", href: "/infrastructure" },
   { label: "Quality and checkpoints", href: "/quality-and-checkpoints" },
   { label: "Contact us", href: "/contacts" },
+  { label: "Investors", href: "/investors" },
 ];
 
 export default function Footer() {

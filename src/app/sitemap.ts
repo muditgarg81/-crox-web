@@ -10,6 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/infrastructure", priority: 0.7 },
     { path: "/quality-and-checkpoints", priority: 0.7 },
     { path: "/contacts", priority: 0.6 },
+    { path: "/investors", priority: 0.5 },
+    { path: "/investors/annual-returns", priority: 0.5 },
   ].map((route) => ({
     url: `${siteUrl}${route.path}`,
     lastModified: new Date(),

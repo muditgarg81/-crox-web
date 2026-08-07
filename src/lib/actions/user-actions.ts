@@ -76,3 +76,38 @@ export async function updateEmployeeId(formData: FormData) {
   await prisma.user.update({ where: { id }, data: { employeeId } });
   revalidateUserPages();
 }
+
+export async function reviewSignup(formData: FormData) {
+  await requireAdmin();
+  const id = String(formData.get("id"));
+  const decision = String(formData.get("decision"));
+  const name = String(formData.get("name") ?? "").trim();
+  const employeeId = String(formData.get("employeeId") ?? "").trim() || null;
+
+  if (!["APPROVED", "REJECTED"].includes(decision)) {
+    throw new Error("Invalid decision.");
+  }
+
+  if (decision === "APPROVED") {
+    if (!name) {
+      throw new Error("Enter the employee's name before approving.");
+    }
+    if (employeeId) {
+      const existing = await prisma.user.findUnique({ where: { employeeId } });
+      if (existing && existing.id !== id) {
+        throw new Error(`Employee ID "${employeeId}" is already in use.`);
+      }
+    }
+    await prisma.user.update({
+      where: { id },
+      data: { name, employeeId, approvalStatus: "APPROVED" },
+    });
+  } else {
+    await prisma.user.update({
+      where: { id },
+      data: { approvalStatus: "REJECTED" },
+    });
+  }
+
+  revalidateUserPages();
+}

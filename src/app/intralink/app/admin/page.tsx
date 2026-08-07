@@ -8,7 +8,9 @@ import {
   setUserActive,
   updateLeaveBalances,
   updateEmployeeId,
+  reviewSignup,
 } from "@/lib/actions/user-actions";
+import { uploadAnnualReturn, deletePublicDocument } from "@/lib/actions/public-document-actions";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -19,7 +21,11 @@ export default async function AdminConsolePage() {
   if (!session?.user) return null;
   if (session.user.role !== "ADMIN") redirect("/intralink/app/dashboard");
 
-  const [pendingLeave, openGrievances, users] = await Promise.all([
+  const [pendingSignups, pendingLeave, openGrievances, users, annualReturns] = await Promise.all([
+    prisma.user.findMany({
+      where: { approvalStatus: "PENDING" },
+      orderBy: { createdAt: "asc" },
+    }),
     prisma.leaveRequest.findMany({
       where: { status: "PENDING" },
       include: { user: true },
@@ -30,13 +36,82 @@ export default async function AdminConsolePage() {
       include: { user: true },
       orderBy: { createdAt: "asc" },
     }),
-    prisma.user.findMany({ orderBy: { name: "asc" } }),
+    prisma.user.findMany({
+      where: { approvalStatus: { not: "PENDING" } },
+      orderBy: { name: "asc" },
+    }),
+    prisma.publicDocument.findMany({
+      where: { category: "ANNUAL_RETURN" },
+      orderBy: { financialYear: "desc" },
+    }),
   ]);
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-foreground mb-1">Admin Console</h1>
       <p className="text-muted mb-8">Manage pending requests and user accounts in one place.</p>
+
+      <section className="mb-12">
+        <h2 className="text-lg font-bold text-foreground mb-4">
+          Pending Signups ({pendingSignups.length})
+        </h2>
+        {pendingSignups.length === 0 ? (
+          <p className="text-muted text-sm">No signups waiting for approval.</p>
+        ) : (
+          <div className="space-y-4">
+            {pendingSignups.map((s) => (
+              <div key={s.id} className="bg-white rounded-xl shadow-sm p-6">
+                <p className="text-sm text-muted mb-3">
+                  Signed up via {s.email ? `email (${s.email})` : `phone (${s.phone})`} &middot;{" "}
+                  {formatDate(s.createdAt)}
+                </p>
+                <form action={reviewSignup} className="flex flex-wrap items-end gap-4">
+                  <input type="hidden" name="id" value={s.id} />
+                  <div>
+                    <label className="block text-xs font-medium text-muted mb-1">
+                      Name {!s.name && <span className="text-red-500">(required to approve)</span>}
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      defaultValue={s.name}
+                      placeholder="Full name"
+                      required
+                      className="w-48 rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-muted mb-1">Employee ID</label>
+                    <input
+                      type="text"
+                      name="employeeId"
+                      defaultValue={s.employeeId ?? ""}
+                      placeholder="e.g. EMP001"
+                      className="w-32 rounded-lg border border-gray-200 px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    name="decision"
+                    value="APPROVED"
+                    className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white hover:bg-navy-dark transition-colors"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    type="submit"
+                    name="decision"
+                    value="REJECTED"
+                    className="rounded-full border border-red-300 text-red-600 px-5 py-2 text-sm font-semibold hover:bg-red-50 transition-colors"
+                  >
+                    Reject
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section className="mb-12">
         <h2 className="text-lg font-bold text-foreground mb-4">
@@ -163,10 +238,15 @@ export default async function AdminConsolePage() {
                         Deactivated
                       </span>
                     )}
+                    {u.approvalStatus === "REJECTED" && (
+                      <span className="ml-2 text-[10px] uppercase tracking-wide bg-red-100 text-red-600 rounded-full px-2 py-0.5">
+                        Rejected
+                      </span>
+                    )}
                   </p>
                   <p className="text-sm text-muted">
-                    {u.email} &middot; {u.department ?? "No department"} &middot; ID:{" "}
-                    {u.employeeId ?? "not set"}
+                    {u.email ?? u.phone ?? "No contact info"} &middot; {u.department ?? "No department"} &middot;
+                    ID: {u.employeeId ?? "not set"}
                   </p>
                 </div>
 
@@ -255,6 +335,87 @@ export default async function AdminConsolePage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="text-lg font-bold text-foreground mb-4">
+          Investor Relations &mdash; Annual Returns ({annualReturns.length})
+        </h2>
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-4">
+          <form action={uploadAnnualReturn} className="flex flex-wrap items-end gap-4">
+            <div>
+              <label className="block text-xs font-medium text-muted mb-1">Financial Year</label>
+              <input
+                type="text"
+                name="financialYear"
+                placeholder="e.g. FY 2023-24"
+                required
+                className="w-36 rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-muted mb-1">Title</label>
+              <input
+                type="text"
+                name="title"
+                placeholder="e.g. Annual Return (Form MGT-7A)"
+                required
+                className="w-64 rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-muted mb-1">File (PDF)</label>
+              <input
+                type="file"
+                name="file"
+                accept="application/pdf"
+                required
+                className="text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white hover:bg-navy-dark transition-colors"
+            >
+              Upload
+            </button>
+          </form>
+        </div>
+        {annualReturns.length === 0 ? (
+          <p className="text-muted text-sm">No annual returns uploaded yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {annualReturns.map((doc) => (
+              <div
+                key={doc.id}
+                className="bg-white rounded-xl shadow-sm p-4 flex flex-wrap items-center justify-between gap-3"
+              >
+                <div>
+                  <p className="font-semibold text-foreground text-sm">{doc.title}</p>
+                  <p className="text-xs text-muted">
+                    {doc.financialYear} &middot; Uploaded {formatDate(doc.createdAt)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <a
+                    href={doc.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-navy hover:text-amber"
+                  >
+                    View
+                  </a>
+                  <form action={deletePublicDocument}>
+                    <input type="hidden" name="id" value={doc.id} />
+                    <button type="submit" className="text-xs font-semibold text-red-600 hover:text-red-700">
+                      Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

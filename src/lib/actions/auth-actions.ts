@@ -5,7 +5,7 @@ import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/auth";
 
-export type ActionState = { error?: string } | undefined;
+export type ActionState = { error?: string; pending?: string } | undefined;
 
 export async function signup(_prevState: ActionState, formData: FormData): Promise<ActionState> {
   const name = String(formData.get("name") ?? "").trim();
@@ -15,8 +15,8 @@ export async function signup(_prevState: ActionState, formData: FormData): Promi
   const password = String(formData.get("password") ?? "");
   const department = String(formData.get("department") ?? "").trim() || null;
 
-  if (!name || !email || !password) {
-    return { error: "All fields are required." };
+  if (!email || !password) {
+    return { error: "Email and password are required." };
   }
   if (password.length < 8) {
     return { error: "Password must be at least 8 characters." };
@@ -30,21 +30,19 @@ export async function signup(_prevState: ActionState, formData: FormData): Promi
   const passwordHash = await bcrypt.hash(password, 10);
 
   await prisma.user.create({
-    data: { name, email, passwordHash, department, role: "EMPLOYEE" },
+    data: {
+      name: name || "",
+      email,
+      passwordHash,
+      department,
+      role: "EMPLOYEE",
+      approvalStatus: "PENDING",
+    },
   });
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirectTo: "/intralink/app/dashboard",
-    });
-  } catch (err) {
-    if (err instanceof AuthError) {
-      return { error: "Account created, but sign-in failed. Please log in." };
-    }
-    throw err;
-  }
+  return {
+    pending: "Your account has been created and is pending admin approval. You'll be able to log in once it's approved.",
+  };
 }
 
 export async function login(_prevState: ActionState, formData: FormData): Promise<ActionState> {
@@ -61,7 +59,7 @@ export async function login(_prevState: ActionState, formData: FormData): Promis
     });
   } catch (err) {
     if (err instanceof AuthError) {
-      return { error: "Invalid email or password." };
+      return { error: "Invalid email or password, or your account is not yet approved." };
     }
     throw err;
   }

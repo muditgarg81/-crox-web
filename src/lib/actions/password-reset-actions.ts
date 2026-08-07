@@ -121,6 +121,9 @@ export async function changePassword(
   }
 
   const user = await prisma.user.findUniqueOrThrow({ where: { id: session.user.id } });
+  if (!user.passwordHash) {
+    return { error: "Your account doesn't use a password — it signs in via mobile OTP." };
+  }
   const valid = await bcrypt.compare(currentPassword, user.passwordHash);
   if (!valid) return { error: "Current password is incorrect." };
 

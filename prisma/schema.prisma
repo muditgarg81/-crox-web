@@ -37,18 +37,25 @@ enum AttendanceStatus {
   HALF_DAY
 }
 
+enum SignupStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id           String   @id @default(cuid())
-  employeeId   String?  @unique
-  name         String
-  email        String   @unique
-  passwordHash String
-  role         Role     @default(EMPLOYEE)
-  isActive     Boolean  @default(true)
-  department   String?
-  designation  String?
-  phone        String?
-  createdAt    DateTime @default(now())
+  id             String       @id @default(cuid())
+  employeeId     String?      @unique
+  name           String
+  email          String?      @unique
+  phone          String?      @unique
+  passwordHash   String?
+  role           Role         @default(EMPLOYEE)
+  isActive       Boolean      @default(true)
+  approvalStatus SignupStatus @default(PENDING)
+  department     String?
+  designation    String?
+  createdAt      DateTime     @default(now())
 
   casualLeaveBalance Int @default(12)
   sickLeaveBalance   Int @default(8)
@@ -63,9 +70,20 @@ model User {
   passwordResetTokens PasswordResetToken[]
   attendanceRecords   AttendanceRecord[]   @relation("EmployeeAttendance")
   markedAttendance    AttendanceRecord[]   @relation("MarkedAttendance")
+  otpLoginTokens      OtpLoginToken[]
+  uploadedPublicDocuments PublicDocument[] @relation("UploadedPublicDocuments")
 }
 
 model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model OtpLoginToken {
   id        String   @id @default(cuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -135,4 +153,19 @@ model AttendanceRecord {
   updatedAt     DateTime         @updatedAt
 
   @@unique([userId, date])
+}
+
+enum PublicDocumentCategory {
+  ANNUAL_RETURN
+}
+
+model PublicDocument {
+  id           String                  @id @default(cuid())
+  category     PublicDocumentCategory
+  title        String
+  financialYear String
+  fileUrl      String
+  uploadedById String
+  uploadedBy   User                    @relation("UploadedPublicDocuments", fields: [uploadedById], references: [id])
+  createdAt    DateTime                @default(now())
 }
