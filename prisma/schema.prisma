@@ -157,15 +157,19 @@ model AttendanceRecord {
 
 enum PublicDocumentCategory {
   ANNUAL_RETURN
+  FINANCIAL_STATEMENT
+  BOARD_RESOLUTION
+  SHAREHOLDING_PATTERN
+  OTHER
 }
 
 model PublicDocument {
-  id           String                  @id @default(cuid())
+  id           String                 @id @default(cuid())
   category     PublicDocumentCategory
   title        String
-  financialYear String
+  periodLabel  String
   fileUrl      String
   uploadedById String
-  uploadedBy   User                    @relation("UploadedPublicDocuments", fields: [uploadedById], references: [id])
-  createdAt    DateTime                @default(now())
+  uploadedBy   User                   @relation("UploadedPublicDocuments", fields: [uploadedById], references: [id])
+  createdAt    DateTime               @default(now())
 }

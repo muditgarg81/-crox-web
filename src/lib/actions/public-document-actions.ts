@@ -4,36 +4,43 @@ import { revalidatePath } from "next/cache";
 import { put, del } from "@vercel/blob";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { documentCategories } from "@/lib/investor-documents";
+import type { PublicDocumentCategory } from "@/generated/prisma/client";
 
-export async function uploadAnnualReturn(formData: FormData) {
+export async function uploadPublicDocument(formData: FormData) {
   const session = await auth();
   if (!session?.user || session.user.role !== "ADMIN") {
-    throw new Error("Only admins can upload annual returns.");
+    throw new Error("Only admins can upload investor documents.");
   }
 
-  const financialYear = String(formData.get("financialYear") ?? "").trim();
+  const category = String(formData.get("category") ?? "") as PublicDocumentCategory;
+  const periodLabel = String(formData.get("periodLabel") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
   const file = formData.get("file") as File | null;
 
-  if (!financialYear || !title || !file || file.size === 0) {
-    throw new Error("Financial year, title, and file are required.");
+  if (!(category in documentCategories)) {
+    throw new Error("Invalid document category.");
+  }
+  if (!periodLabel || !title || !file || file.size === 0) {
+    throw new Error("Period, title, and file are required.");
   }
 
-  const blob = await put(`investor-documents/annual-returns/${Date.now()}-${file.name}`, file, {
+  const { slug } = documentCategories[category];
+  const blob = await put(`investor-documents/${slug}/${Date.now()}-${file.name}`, file, {
     access: "public",
   });
 
   await prisma.publicDocument.create({
     data: {
-      category: "ANNUAL_RETURN",
-      financialYear,
+      category,
+      periodLabel,
       title,
       fileUrl: blob.url,
       uploadedById: session.user.id,
     },
   });
 
-  revalidatePath("/investors/annual-returns");
+  revalidatePath("/investors", "layout");
   revalidatePath("/intralink/app/admin");
 }
 
@@ -53,6 +60,6 @@ export async function deletePublicDocument(formData: FormData) {
     // Blob already gone or delete failed — DB record is the source of truth for the listing.
   }
 
-  revalidatePath("/investors/annual-returns");
+  revalidatePath("/investors", "layout");
   revalidatePath("/intralink/app/admin");
 }

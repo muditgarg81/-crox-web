@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { products, blogPosts } from "@/lib/site";
+import { documentCategories } from "@/lib/investor-documents";
 
 const siteUrl = "https://croxoilandgas.com";
 
@@ -11,7 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/quality-and-checkpoints", priority: 0.7 },
     { path: "/contacts", priority: 0.6 },
     { path: "/investors", priority: 0.5 },
-    { path: "/investors/annual-returns", priority: 0.5 },
+    ...Object.values(documentCategories).map((meta) => ({
+      path: `/investors/${meta.slug}`,
+      priority: 0.5,
+    })),
   ].map((route) => ({
     url: `${siteUrl}${route.path}`,
     lastModified: new Date(),

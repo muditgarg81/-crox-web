@@ -10,7 +10,8 @@ import {
   updateEmployeeId,
   reviewSignup,
 } from "@/lib/actions/user-actions";
-import { uploadAnnualReturn, deletePublicDocument } from "@/lib/actions/public-document-actions";
+import { uploadPublicDocument, deletePublicDocument } from "@/lib/actions/public-document-actions";
+import { documentCategories } from "@/lib/investor-documents";
 
 function formatDate(d: Date) {
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -21,7 +22,7 @@ export default async function AdminConsolePage() {
   if (!session?.user) return null;
   if (session.user.role !== "ADMIN") redirect("/intralink/app/dashboard");
 
-  const [pendingSignups, pendingLeave, openGrievances, users, annualReturns] = await Promise.all([
+  const [pendingSignups, pendingLeave, openGrievances, users, investorDocuments] = await Promise.all([
     prisma.user.findMany({
       where: { approvalStatus: "PENDING" },
       orderBy: { createdAt: "asc" },
@@ -41,8 +42,7 @@ export default async function AdminConsolePage() {
       orderBy: { name: "asc" },
     }),
     prisma.publicDocument.findMany({
-      where: { category: "ANNUAL_RETURN" },
-      orderBy: { financialYear: "desc" },
+      orderBy: [{ category: "asc" }, { periodLabel: "desc" }],
     }),
   ]);
 
@@ -339,15 +339,29 @@ export default async function AdminConsolePage() {
 
       <section className="mt-12">
         <h2 className="text-lg font-bold text-foreground mb-4">
-          Investor Relations &mdash; Annual Returns ({annualReturns.length})
+          Investor Relations Documents ({investorDocuments.length})
         </h2>
         <div className="bg-white rounded-xl shadow-sm p-6 mb-4">
-          <form action={uploadAnnualReturn} className="flex flex-wrap items-end gap-4">
+          <form action={uploadPublicDocument} className="flex flex-wrap items-end gap-4">
             <div>
-              <label className="block text-xs font-medium text-muted mb-1">Financial Year</label>
+              <label className="block text-xs font-medium text-muted mb-1">Category</label>
+              <select
+                name="category"
+                required
+                className="w-48 rounded-lg border border-gray-200 px-3 py-2 text-sm"
+              >
+                {Object.entries(documentCategories).map(([value, meta]) => (
+                  <option key={value} value={value}>
+                    {meta.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-muted mb-1">Period</label>
               <input
                 type="text"
-                name="financialYear"
+                name="periodLabel"
                 placeholder="e.g. FY 2023-24"
                 required
                 className="w-36 rounded-lg border border-gray-200 px-3 py-2 text-sm"
@@ -381,19 +395,24 @@ export default async function AdminConsolePage() {
             </button>
           </form>
         </div>
-        {annualReturns.length === 0 ? (
-          <p className="text-muted text-sm">No annual returns uploaded yet.</p>
+        {investorDocuments.length === 0 ? (
+          <p className="text-muted text-sm">No investor documents uploaded yet.</p>
         ) : (
           <div className="space-y-3">
-            {annualReturns.map((doc) => (
+            {investorDocuments.map((doc) => (
               <div
                 key={doc.id}
                 className="bg-white rounded-xl shadow-sm p-4 flex flex-wrap items-center justify-between gap-3"
               >
                 <div>
-                  <p className="font-semibold text-foreground text-sm">{doc.title}</p>
+                  <p className="font-semibold text-foreground text-sm">
+                    {doc.title}
+                    <span className="ml-2 text-[10px] uppercase tracking-wide bg-amber/20 text-amber rounded-full px-2 py-0.5">
+                      {documentCategories[doc.category].label}
+                    </span>
+                  </p>
                   <p className="text-xs text-muted">
-                    {doc.financialYear} &middot; Uploaded {formatDate(doc.createdAt)}
+                    {doc.periodLabel} &middot; Uploaded {formatDate(doc.createdAt)}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
